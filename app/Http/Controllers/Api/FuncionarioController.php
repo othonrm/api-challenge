@@ -74,6 +74,28 @@ class FuncionarioController extends Controller
             ], 404);
         }
 
+        $validate = Validator::make($request->all(), [
+            'nome' => ['nullable', 'string', 'max:255'],
+            'sobrenome' => ['nullable', 'string', 'max:255'],
+            'data_nascimento' => ['nullable', 'date_format:d/m/Y','before: 6 years ago'],
+            'sexo' => ['nullable', 'in:f,m', 'max:1'],
+        ],[
+            'data_nascimento.date_format' => "Data de nascimento não está no formato: dia/mês/ano ex.: 30/01/1990.",
+            'data_nascimento.before' => "Data de nascimento deve ser anterior a hoje e maior que 6 anos.",
+        ]);
+
+        if ($validate->fails())
+        {
+            return response()->json([
+                "error" => true,
+                "message" => $validate->errors()
+            ], 500);
+        }
+        if($request->has('data_nascimento'))
+        {
+            $request['data_nascimento'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->data_nascimento)->format('Y-m-d');
+        }
+
         $funcionario->fill($request->all());
 
         $funcionario->save();
