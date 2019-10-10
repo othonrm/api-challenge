@@ -19,9 +19,9 @@ class RelatorioController extends Controller
 
             $idade_media = intval(number_format(Funcionario::get('data_nascimento')->avg('idade'), 0));
 
-            $idade_mais_velha = Funcionario::get()->sortBy('idade')->first()->idade;
+            $idade_mais_velha = Funcionario::get()->sortByDesc('idade')->first()->idade;
 
-            $idade_mais_nova = Funcionario::get('data_nascimento')->sortByDesc('idade')->first()->idade;
+            $idade_mais_nova = Funcionario::get('data_nascimento')->sortBy('idade')->first()->idade;
 
             return response()->json([
                 "message" => "Relatórios retornados com sucesso!",
